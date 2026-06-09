@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <windows.h>
+#include <math.h>
 
 int main(int argc, char** args)
 {
@@ -11,8 +12,10 @@ int main(int argc, char** args)
 
       QueryPerformanceFrequency(&freq);
 
-      // printf("%f\n", SqrtSecondLvl(12308, 1)); Test
-      
+      /*
+      printf("%f\n", SqrtSecondLvl(12308, 1));
+      */
+
       double delay = (double) (start.QuadPart - end.QuadPart) * 1000.0 / freq.QuadPart;
       
       QueryPerformanceCounter(&start);
