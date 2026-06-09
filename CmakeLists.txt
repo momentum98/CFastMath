@@ -6,7 +6,6 @@ set(CMAKE_C_STANDARD_REQUIRED)
 set(SOURCE_FILES 
       src/main.c
       src/fastmath.c
-      src/numbers.c
 )
 
 add_executable(CFastMath ${SOURCE_FILES})

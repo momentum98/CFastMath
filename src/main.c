@@ -14,7 +14,7 @@ int main(int argc, char** args)
 
       QueryPerformanceCounter(&start);
 
-      //printf("%f\n", HardwareSqrt(12308));
+      printf("%f\n", SoftwareSqrtFrstLvlF(12308, 1));
       
       QueryPerformanceCounter(&end);
       

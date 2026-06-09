@@ -1,152 +1,173 @@
 #include "fastmath.h"
 
-#include "numbers.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <immintrin.h>
 
-const static double sqrtLUTStepSize = 0.1f;
-const static double inverseSqrtLUTStepSize = 1 / sqrtLUTStepSize;
-
-const static double sqrtLUT[41] = 
-{
-      0.0,
-      0.3162277660168379,
-      0.4472135954999579,
-      0.5477225575051661,
-      0.6324555320336758,
-      0.7071067811865476,
-      0.7745966692414834,
-      0.8366600265340756,
-      0.8944271909999159,
-      0.9486832980505138,
-      1.0,
-      1.0488088481701516,
-      1.0954451150103323,
-      1.140175425099138,
-      1.1832159566199232,
-      1.224744871391589,
-      1.2649110640673518,
-      1.3038404810405297,
-      1.3416407864998738,
-      1.378404875209022,
-      1.4142135623730951,
-      1.449137674618944,
-      1.4832396974191326,
-      1.51657508881031,
-      1.5491933384829668,
-      1.5811388300841898,
-      1.61245154965971,
-      1.6431676725154984,
-      1.6733200530681511,
-      1.7029386365926402,
-      1.7320508075688772,
-      1.7606816861038855,
-      1.7888543819998317,
-      1.816590212458495,
-      1.8439088914585775,
-      1.8708286933869707,
-      1.8973665961010276,
-      1.9235384061671343,
-      1.9493588689617927,
-      1.9748417658131499,
-      2.0
-};
-
-static void GetClosestSqrtLUTData(double number, double* pLUTValue, double* pLUTSqrValue)
-{
-      i32 index = (int)((number * inverseSqrtLUTStepSize) + 0.5);
-
-      *pLUTValue    = sqrtLUT[index];
-      *pLUTSqrValue = sqrtLUTStepSize * index;
-}
-
-static double SqrtIterateFirstLvl(double number, double try, double trySqr)
-{
-      const double correction = (number - trySqr) / (2.0 * try);
-      return try + correction;
-}
-
 double SoftwareSqrtFrstLvl(double number, int iterations)
 { 
-      if (number < 0)
-      {
-            return -1;
-      }
-      
-      if (number == 0 || number == 1)
+      if (number <= 0)
       {
             return number;
       }
 
-      i32 signal = -1;
-      i32 exponent = -1;
+      const u64 numberBytes = *(u64*) &number;
+            
+      const u32 biasExponent = (numberBytes >> 52) & 0x00000000000007FF;
+      i32 numberExponent = (i32) biasExponent - 1023;
 
-      double normalizedNumber = -1.0;
+      const i32 isOdd = numberExponent & 1;
+            
+      numberExponent -= isOdd;
+            
+      const u64 normalizedBytes = ((u64) (1023 + isOdd) << 52) | (numberBytes & 0x000FFFFFFFFFFFFFLLU);
+      double normalizedNumber = *(double*) &normalizedBytes;
 
-      NormalizeFloatNumber(number, &normalizedNumber, &exponent, &signal);
-
-      double LUTValue = -1.0;
-      double LUTSqrValue = -1.0;
-
-      GetClosestSqrtLUTData(normalizedNumber, &LUTValue, &LUTSqrValue);
-
-      double try = LUTValue;
-      double trySqr = LUTSqrValue;
-
+      double try = 0.5 * (1.0 + normalizedNumber);
+      
       for (i32 i = 0; i < iterations; i++)
       {
-            try = SqrtIterateFirstLvl(normalizedNumber, try, trySqr);
-            trySqr = try * try;
+            try = 0.5 * (try + (normalizedNumber / try));
       }
 
-      u64 tryBytes = GetFloatNumberBytes(try);
-      u64 tryMantissa = GetFloatNumberMantissa(tryBytes);
+      const i32 finalExponent = (numberExponent >> 1) + 1023;
 
-      return CreateFloatNumber(tryMantissa, (u32) ((exponent >> 1) + 1023), signal);
+      u64 tryBytes = *(u64*) &try;
+      u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
+
+      return *(double*) &finalBytes;
 }
 
-static double SqrtIterateSecondLvl(double number, double try, double trySqr)
-{
-      return try * ((try * try) + (3 * number)) / ((3 * (try * try)) + number);
+float SoftwareSqrtFrstLvlF(float number, int iterations)
+{ 
+      if (number <= 0)
+      {
+            return number;
+      }
+
+      const u32 numberBytes = *(u32*) &number;
+            
+      const u32 biasExponent = (numberBytes >> 23) & 0x00000000000000FF;
+      i32 numberExponent = (i32) biasExponent - 127;
+
+      const u32 isOdd = numberExponent & 1;
+    
+      numberExponent -= isOdd;
+
+      const u32 normalizedBytes = ((u32) (127 + isOdd) << 23) | (numberBytes & 0x00000000007FFFFF);
+      float normalizedNumber = *(float*) &normalizedBytes;
+
+      float try = 0.5 * (1.0 + normalizedNumber);
+      
+      for (u32 i = 0; i < iterations; ++i)
+      {
+            try = 0.5 * (try + (normalizedNumber / try));
+      }
+
+      const i32 finalExponent = (numberExponent >> 1) + 127;
+
+      u32 tryBytes = *(u32*) &try;
+      u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
+
+      return *(float*) &finalBytes;
 }
 
 double SoftwareSqrtScndLvl(double number, int iterations)
 { 
-      if (number < 0)
-      {
-            return -1;
-      }
-      
-      if (number == 0 || number == 1)
+      if (number <= 0)
       {
             return number;
       }
 
-      i32 signal = -1;
-      i32 exponent = -1;
+      const u64 numberBytes = *(u64*) &number;
+            
+      const u32 biasExponent = (numberBytes >> 52) & 0x00000000000007FF;
+      i32 numberExponent = (i32) biasExponent - 1023;
 
-      double normalizedNumber = -1.0;
+      const i32 isOdd = numberExponent & 1;
+    
+      numberExponent -= isOdd;
 
-      NormalizeFloatNumber(number, &normalizedNumber, &exponent, &signal);
+      const u64 normalizedBytes = ((u64) (1023 + isOdd) << 52) | (numberBytes & 0x000FFFFFFFFFFFFFLLU);
+      double normalizedNumber = *(double*) &normalizedBytes;
 
-      double LUTValue = -1.0;
-      double LUTSqrValue = -1.0;
-
-      GetClosestSqrtLUTData(normalizedNumber, &LUTValue, &LUTSqrValue);
-
-      double try = LUTValue;
-      double trySqr = LUTSqrValue;
-
-      for (i32 i = 0; i < iterations; i++)
+      double try = 0.5 * (1.0 + normalizedNumber);
+      
+      for (u32 i = 0; i < iterations; ++i)
       {
-            try = SqrtIterateSecondLvl(normalizedNumber, try, trySqr);
-            trySqr = try * try;
+            try = try * ((try * try) + (3 * normalizedNumber)) / ((3 * (try * try)) + normalizedNumber);
       }
 
-      u64 tryBytes = GetFloatNumberBytes(try);
-      u64 tryMantissa = GetFloatNumberMantissa(tryBytes);
+      const i32 finalExponent = (numberExponent >> 1) + 1023;
 
-      return CreateFloatNumber(tryMantissa, (u32) ((exponent >> 1) + 1023), signal);
+      u64 tryBytes = *(u64*) &try;
+      u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
+
+      return *(double*) &finalBytes;
+}
+
+float SoftwareSqrtScndLvlF(float number, int iterations)
+{ 
+      if (number <= 0)
+      {
+            return number;
+      }
+
+      const u32 numberBytes = *(u32*) &number;
+            
+      const u32 biasExponent = (numberBytes >> 23) & 0x00000000000000FF;
+      i32 numberExponent = (i32) biasExponent - 127;
+
+      const u32 isOdd = numberExponent & 1;
+    
+      numberExponent -= isOdd;
+
+      const u32 normalizedBytes = ((u32) (127 + isOdd) << 23) | (numberBytes & 0x00000000007FFFFF);
+      float normalizedNumber = *(float*) &normalizedBytes;
+
+      float try = 0.5 * (1.0 + normalizedNumber);
+      
+      for (u32 i = 0; i < iterations; ++i)
+      {
+            try = try * ((try * try) + (3 * normalizedNumber)) / ((3 * (try * try)) + normalizedNumber);
+      }
+
+      const i32 finalExponent = (numberExponent >> 1) + 127;
+
+      u32 tryBytes = *(u32*) &try;
+      u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
+
+      return *(float*) &finalBytes;
+}
+
+double HardwareSqrt(double number)
+{
+      __m128d reg = _mm_set_sd(number);
+      __m128d value = _mm_sqrt_sd(reg, reg);
+
+      return _mm_cvtsd_f64(value);
+}
+
+float HardwareSqrtF(float number)
+{
+      __m128d reg = _mm_set_ss(number);
+      __m128d value = _mm_sqrt_ss(reg);
+
+      return _mm_cvtss_f32(value);
+}
+
+float HardwareFastInverseSqrtF(float number)
+{
+      __m128d reg = _mm_set_ss(number);
+      __m128d value = _mm_rsqrt_ss(reg);
+
+      return _mm_cvtss_f32(value);
+}
+
+float HardwareFastSqrtF(float number)
+{
+      __m128d reg = _mm_set_ss(number);
+      __m128d value = _mm_rsqrt_ss(reg);
+
+      return (_mm_cvtss_f32(value)) * number;
 }
