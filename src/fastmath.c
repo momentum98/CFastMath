@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <immintrin.h>
 
 const static double sqrtLUTStepSize = 0.1f;
 const static double inverseSqrtLUTStepSize = 1 / sqrtLUTStepSize;
@@ -111,7 +112,7 @@ static double SqrtIterateSecondLvl(double number, double try, double trySqr)
       return try * ((try * try) + (3 * number)) / ((3 * (try * try)) + number);
 }
 
-double SoftwareSqrtSndLvl(double number, int iterations)
+double SoftwareSqrtScndLvl(double number, int iterations)
 { 
       if (number < 0)
       {
