@@ -12,7 +12,8 @@ set(SOURCE_FILES
 add_executable(CFastMath ${SOURCE_FILES})
 
 target_compile_options(CFastMath PRIVATE 
-      -Ofast -fno-trapping-math 
+      -O3 -ffast-math
+      -fno-trapping-math 
       -flto -funroll-loops 
       -falign-functions=64 
       -falign-loops=64 -march=native

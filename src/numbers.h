@@ -8,7 +8,13 @@ typedef uint32_t  u32;
 typedef int32_t   i32;
 typedef int64_t   i64;
 
-inline u64 GetFloatNumberBytes(double number)
+typedef union 
+{
+    double fN;
+    u64    iN;
+} IntFloatToFloatInt;
+
+static inline u64 GetFloatNumberBytes(double number)
 {
       IntFloatToFloatInt reInterpret = {0};
       reInterpret.fN = number;
@@ -16,27 +22,27 @@ inline u64 GetFloatNumberBytes(double number)
       return reInterpret.iN;
 }
 
-inline u64 GetFloatNumberMantissa(const u64 numberBytes)
+static inline u64 GetFloatNumberMantissa(const u64 numberBytes)
 {
       return (numberBytes & 0x000FFFFFFFFFFFFF);
 }
 
-inline i32 GetFloatNumberBiasExponent(const u64 numberBytes)
+static inline i32 GetFloatNumberBiasExponent(const u64 numberBytes)
 {
       return (i32) ((numberBytes >> 52) & 0x00000000000007FF);
 }
 
-inline i32 GetFloatNumberExponent(const u64 numberBytes)
+static inline i32 GetFloatNumberExponent(const u64 numberBytes)
 {
       return (i32) ((numberBytes >> 52) & 0x00000000000007FF) - 1023;
 }
 
-inline i32 GetFloatNumberSignal(const u64 numberBytes)
+static inline i32 GetFloatNumberSignal(const u64 numberBytes)
 {
       return (i32) ((numberBytes >> 63) & 0x0000000000000001);
 }
 
-inline double CreateFloatNumber(const u64 mantissa, const u32 biasExp, const u32 signal)
+static inline double CreateFloatNumber(const u64 mantissa, const u32 biasExp, const u32 signal)
 {
       u64 numberBytes = 
       (((u64) (signal & 0x00000001))) << 63 | 
@@ -48,5 +54,7 @@ inline double CreateFloatNumber(const u64 mantissa, const u32 biasExp, const u32
 
       return reInterpret.fN;
 }
+
+void NormalizeFloatNumber(double number, double* pNormalized, i32* pExponent, i32* pSignal);
 
 #endif

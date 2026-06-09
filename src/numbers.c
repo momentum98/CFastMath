@@ -2,12 +2,6 @@
 
 #include <stdio.h>
 
-typedef union 
-{
-    double fN;
-    u64    iN;
-} IntFloatToFloatInt;
-
 void NormalizeFloatNumber(double number, double* pNormalized, i32* pExponent, i32* pSignal)
 {
       const u64 numberBytes = GetFloatNumberBytes(number);
