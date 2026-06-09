@@ -12,13 +12,15 @@ int main(int argc, char** args)
 
       QueryPerformanceFrequency(&freq);
 
+      QueryPerformanceCounter(&start);
+
       /*
       printf("%f\n", SqrtSecondLvl(12308, 1));
       */
+      
+      QueryPerformanceCounter(&end);
+      
+      double delay = (double) (end.QuadPart - start.QuadPart) * 1000.0 / freq.QuadPart;
 
-      double delay = (double) (start.QuadPart - end.QuadPart) * 1000.0 / freq.QuadPart;
-      
-      QueryPerformanceCounter(&start);
-      
-      printf("Time: %.9f", delay);
+      printf("Time: %.9f\n", delay);
 }

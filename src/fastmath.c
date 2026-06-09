@@ -67,7 +67,7 @@ static double SqrtIterateFirstLvl(double number, double try, double trySqr)
       return try + correction;
 }
 
-double SqrtFirstLvl(double number, int iterations)
+double SoftwareSqrtFrstLvl(double number, int iterations)
 { 
       if (number < 0)
       {
@@ -111,7 +111,7 @@ static double SqrtIterateSecondLvl(double number, double try, double trySqr)
       return try * ((try * try) + (3 * number)) / ((3 * (try * try)) + number);
 }
 
-double SqrtSecondLvl(double number, int iterations)
+double SoftwareSqrtSndLvl(double number, int iterations)
 { 
       if (number < 0)
       {
