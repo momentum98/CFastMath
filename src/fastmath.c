@@ -1,8 +1,30 @@
 #include "fastmath.h"
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <immintrin.h>
+
+typedef union
+{
+      float fN;
+      u64   uN;
+} U64FloatToFloatU64;
+
+typedef union
+{
+      float fN;
+      u32   uN;
+} U32FloatToFloatU32;
+
+typedef union
+{
+      double fN;
+      u64    uN;
+} U64DoubleToDoubleU64;
+
+typedef union
+{
+      double fN;
+      u32    uN;
+} U32DoubleToDoubleU32;
 
 double SoftwareSqrtFrstLvl(double number, int iterations)
 { 
@@ -11,7 +33,11 @@ double SoftwareSqrtFrstLvl(double number, int iterations)
             return number;
       }
 
-      const u64 numberBytes = *(u64*) &number;
+      U64DoubleToDoubleU64 reInterpret = {0};
+
+      reInterpret.fN = number;
+
+      const u64 numberBytes = reInterpret.uN;
             
       const u32 biasExponent = (numberBytes >> 52) & 0x00000000000007FF;
       i32 numberExponent = (i32) biasExponent - 1023;
@@ -19,23 +45,30 @@ double SoftwareSqrtFrstLvl(double number, int iterations)
       const i32 isOdd = numberExponent & 1;
             
       numberExponent -= isOdd;
-            
+      
       const u64 normalizedBytes = ((u64) (1023 + isOdd) << 52) | (numberBytes & 0x000FFFFFFFFFFFFFLLU);
-      double normalizedNumber = *(double*) &normalizedBytes;
+      
+      reInterpret.uN = normalizedBytes;
 
+      double normalizedNumber = reInterpret.fN;
+      
       double try = 0.5 * (1.0 + normalizedNumber);
       
-      for (i32 i = 0; i < iterations; i++)
+      for (u32 i = 0; i < iterations; ++i)
       {
             try = 0.5 * (try + (normalizedNumber / try));
       }
 
       const i32 finalExponent = (numberExponent >> 1) + 1023;
 
-      u64 tryBytes = *(u64*) &try;
-      u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
+      reInterpret.fN = try;
 
-      return *(double*) &finalBytes;
+      const u64 tryBytes = reInterpret.uN;
+      const u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
+
+      reInterpret.uN = finalBytes;
+
+      return reInterpret.fN;
 }
 
 float SoftwareSqrtFrstLvlF(float number, int iterations)
@@ -45,7 +78,11 @@ float SoftwareSqrtFrstLvlF(float number, int iterations)
             return number;
       }
 
-      const u32 numberBytes = *(u32*) &number;
+      U32FloatToFloatU32 reInterpret = {0};
+
+      reInterpret.fN = number;
+
+      const u32 numberBytes = reInterpret.uN;
             
       const u32 biasExponent = (numberBytes >> 23) & 0x00000000000000FF;
       i32 numberExponent = (i32) biasExponent - 127;
@@ -55,7 +92,10 @@ float SoftwareSqrtFrstLvlF(float number, int iterations)
       numberExponent -= isOdd;
 
       const u32 normalizedBytes = ((u32) (127 + isOdd) << 23) | (numberBytes & 0x00000000007FFFFF);
-      float normalizedNumber = *(float*) &normalizedBytes;
+
+      reInterpret.uN = normalizedBytes;
+
+      float normalizedNumber = reInterpret.fN;
 
       float try = 0.5 * (1.0 + normalizedNumber);
       
@@ -66,10 +106,14 @@ float SoftwareSqrtFrstLvlF(float number, int iterations)
 
       const i32 finalExponent = (numberExponent >> 1) + 127;
 
-      u32 tryBytes = *(u32*) &try;
-      u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
+      reInterpret.fN = try;
 
-      return *(float*) &finalBytes;
+      const u32 tryBytes = reInterpret.uN;
+      const u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
+
+      reInterpret.uN = finalBytes;
+
+      return reInterpret.fN;
 }
 
 double SoftwareSqrtScndLvl(double number, int iterations)
@@ -79,17 +123,24 @@ double SoftwareSqrtScndLvl(double number, int iterations)
             return number;
       }
 
-      const u64 numberBytes = *(u64*) &number;
+      U64DoubleToDoubleU64 reInterpret = {0};
+
+      reInterpret.fN = number;
+
+      const u64 numberBytes = reInterpret.uN;
             
       const u32 biasExponent = (numberBytes >> 52) & 0x00000000000007FF;
       i32 numberExponent = (i32) biasExponent - 1023;
 
       const i32 isOdd = numberExponent & 1;
-    
+            
       numberExponent -= isOdd;
-
+      
       const u64 normalizedBytes = ((u64) (1023 + isOdd) << 52) | (numberBytes & 0x000FFFFFFFFFFFFFLLU);
-      double normalizedNumber = *(double*) &normalizedBytes;
+
+      reInterpret.uN = normalizedBytes;
+
+      double normalizedNumber = reInterpret.fN;
 
       double try = 0.5 * (1.0 + normalizedNumber);
       
@@ -100,10 +151,14 @@ double SoftwareSqrtScndLvl(double number, int iterations)
 
       const i32 finalExponent = (numberExponent >> 1) + 1023;
 
-      u64 tryBytes = *(u64*) &try;
-      u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
+      reInterpret.fN = try;
 
-      return *(double*) &finalBytes;
+      const u64 tryBytes = reInterpret.uN;
+      const u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
+
+      reInterpret.uN = finalBytes;
+
+      return reInterpret.fN;
 }
 
 float SoftwareSqrtScndLvlF(float number, int iterations)
@@ -113,7 +168,11 @@ float SoftwareSqrtScndLvlF(float number, int iterations)
             return number;
       }
 
-      const u32 numberBytes = *(u32*) &number;
+      U32FloatToFloatU32 reInterpret = {};
+
+      reInterpret.fN = number;
+
+      const u32 numberBytes = reInterpret.uN;
             
       const u32 biasExponent = (numberBytes >> 23) & 0x00000000000000FF;
       i32 numberExponent = (i32) biasExponent - 127;
@@ -123,7 +182,10 @@ float SoftwareSqrtScndLvlF(float number, int iterations)
       numberExponent -= isOdd;
 
       const u32 normalizedBytes = ((u32) (127 + isOdd) << 23) | (numberBytes & 0x00000000007FFFFF);
-      float normalizedNumber = *(float*) &normalizedBytes;
+
+      reInterpret.uN = normalizedBytes;
+
+      float normalizedNumber = reInterpret.fN;
 
       float try = 0.5 * (1.0 + normalizedNumber);
       
@@ -134,10 +196,14 @@ float SoftwareSqrtScndLvlF(float number, int iterations)
 
       const i32 finalExponent = (numberExponent >> 1) + 127;
 
-      u32 tryBytes = *(u32*) &try;
-      u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
+      reInterpret.fN = try;
 
-      return *(float*) &finalBytes;
+      const u32 tryBytes = reInterpret.uN;
+      const u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
+
+      reInterpret.uN = finalBytes;
+
+      return reInterpret.fN;
 }
 
 double HardwareSqrt(double number)
@@ -169,5 +235,5 @@ float HardwareFastSqrtF(float number)
       __m128d reg = _mm_set_ss(number);
       __m128d value = _mm_rsqrt_ss(reg);
 
-      return (_mm_cvtss_f32(value)) * number;
+      return _mm_cvtss_f32(value) * number;
 }
