@@ -4,36 +4,36 @@
 
 typedef union
 {
-      float fN;
-      u64   uN;
-} U64FloatToFloatU64;
+      f32 fN;
+      u64 uN;
+} U64F32ToF32U64;
 
 typedef union
 {
-      float fN;
-      u32   uN;
-} U32FloatToFloatU32;
+      f32 fN;
+      u32 uN;
+} U32F32ToF32U32;
 
 typedef union
 {
-      double fN;
-      u64    uN;
-} U64DoubleToDoubleU64;
+      f64 fN;
+      u64 uN;
+} U64F64ToF64U64;
 
 typedef union
 {
-      double fN;
-      u32    uN;
-} U32DoubleToDoubleU32;
+      f64 fN;
+      u32 uN;
+} U32F64ToF64U32;
 
-double SoftwareSqrtFrstLvl(double number, int iterations)
+f64 SSqrt(f64 number, i32 iterations)
 { 
       if (number <= 0)
       {
             return number;
       }
 
-      U64DoubleToDoubleU64 reInterpret = {0};
+      U64F64ToF64U64 reInterpret = {0};
 
       reInterpret.fN = number;
 
@@ -50,9 +50,9 @@ double SoftwareSqrtFrstLvl(double number, int iterations)
       
       reInterpret.uN = normalizedBytes;
 
-      double normalizedNumber = reInterpret.fN;
+      f64 normalizedNumber = reInterpret.fN;
       
-      double try = 0.5 * (1.0 + normalizedNumber);
+      f64 try = 0.5 * (1.0 + normalizedNumber);
       
       for (u32 i = 0; i < iterations; ++i)
       {
@@ -71,14 +71,14 @@ double SoftwareSqrtFrstLvl(double number, int iterations)
       return reInterpret.fN;
 }
 
-float SoftwareSqrtFrstLvlF(float number, int iterations)
+f32 SSqrtF(f32 number, i32 iterations)
 { 
       if (number <= 0)
       {
             return number;
       }
 
-      U32FloatToFloatU32 reInterpret = {0};
+      U32F32ToF32U32 reInterpret = {0};
 
       reInterpret.fN = number;
 
@@ -95,9 +95,9 @@ float SoftwareSqrtFrstLvlF(float number, int iterations)
 
       reInterpret.uN = normalizedBytes;
 
-      float normalizedNumber = reInterpret.fN;
+      f32 normalizedNumber = reInterpret.fN;
 
-      float try = 0.5 * (1.0 + normalizedNumber);
+      f32 try = 0.5 * (1.0 + normalizedNumber);
       
       for (u32 i = 0; i < iterations; ++i)
       {
@@ -116,14 +116,14 @@ float SoftwareSqrtFrstLvlF(float number, int iterations)
       return reInterpret.fN;
 }
 
-double SoftwareSqrtScndLvl(double number, int iterations)
+f64 SSqrt2(f64 number, i32 iterations)
 { 
       if (number <= 0)
       {
             return number;
       }
 
-      U64DoubleToDoubleU64 reInterpret = {0};
+      U64F64ToF64U64 reInterpret = {0};
 
       reInterpret.fN = number;
 
@@ -140,9 +140,9 @@ double SoftwareSqrtScndLvl(double number, int iterations)
 
       reInterpret.uN = normalizedBytes;
 
-      double normalizedNumber = reInterpret.fN;
+      f64 normalizedNumber = reInterpret.fN;
 
-      double try = 0.5 * (1.0 + normalizedNumber);
+      f64 try = 0.5 * (1.0 + normalizedNumber);
       
       for (u32 i = 0; i < iterations; ++i)
       {
@@ -161,14 +161,14 @@ double SoftwareSqrtScndLvl(double number, int iterations)
       return reInterpret.fN;
 }
 
-float SoftwareSqrtScndLvlF(float number, int iterations)
+f32 SSqrt2F(f32 number, i32 iterations)
 { 
       if (number <= 0)
       {
             return number;
       }
 
-      U32FloatToFloatU32 reInterpret = {};
+      U32F32ToF32U32 reInterpret = {};
 
       reInterpret.fN = number;
 
@@ -185,9 +185,9 @@ float SoftwareSqrtScndLvlF(float number, int iterations)
 
       reInterpret.uN = normalizedBytes;
 
-      float normalizedNumber = reInterpret.fN;
+      f32 normalizedNumber = reInterpret.fN;
 
-      float try = 0.5 * (1.0 + normalizedNumber);
+      f32 try = 0.5 * (1.0 + normalizedNumber);
       
       for (u32 i = 0; i < iterations; ++i)
       {
@@ -206,7 +206,7 @@ float SoftwareSqrtScndLvlF(float number, int iterations)
       return reInterpret.fN;
 }
 
-double HardwareSqrt(double number)
+f64 HSqrt(f64 number)
 {
       __m128d reg = _mm_set_sd(number);
       __m128d value = _mm_sqrt_sd(reg, reg);
@@ -214,26 +214,26 @@ double HardwareSqrt(double number)
       return _mm_cvtsd_f64(value);
 }
 
-float HardwareSqrtF(float number)
+f32 HSqrtF(f32 number)
 {
-      __m128d reg = _mm_set_ss(number);
-      __m128d value = _mm_sqrt_ss(reg);
+      __m128 reg = _mm_set_ss(number);
+      __m128 value = _mm_sqrt_ss(reg);
 
       return _mm_cvtss_f32(value);
 }
 
-float HardwareFastInverseSqrtF(float number)
+f32 HFInvSqrtF(f32 number)
 {
-      __m128d reg = _mm_set_ss(number);
-      __m128d value = _mm_rsqrt_ss(reg);
+      __m128 reg = _mm_set_ss(number);
+      __m128 value = _mm_rsqrt_ss(reg);
 
       return _mm_cvtss_f32(value);
 }
 
-float HardwareFastSqrtF(float number)
+f32 HFSqrtF(f32 number)
 {
-      __m128d reg = _mm_set_ss(number);
-      __m128d value = _mm_rsqrt_ss(reg);
+      __m128 reg = _mm_set_ss(number);
+      __m128 value = _mm_rsqrt_ss(reg);
 
       return _mm_cvtss_f32(value) * number;
 }
