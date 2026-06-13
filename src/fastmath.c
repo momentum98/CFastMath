@@ -1,6 +1,7 @@
 #include "fastmath.h"
 
 #include <immintrin.h>
+#include <math.h>
 
 typedef union
 {
@@ -28,182 +29,70 @@ typedef union
 
 f64 SSqrt(f64 number, i32 iterations)
 { 
-      if (number <= 0)
-      {
-            return number;
-      }
-
-      U64F64ToF64U64 reInterpret = {0};
+      U64F64ToF64U64 reInterpret;
 
       reInterpret.fN = number;
+      reInterpret.uN = 0x1FF0000000000000 + (reInterpret.uN >> 1);
 
-      const u64 numberBytes = reInterpret.uN;
-            
-      const u32 biasExponent = (numberBytes >> 52) & 0x00000000000007FF;
-      i32 numberExponent = (i32) biasExponent - 1023;
-
-      const i32 isOdd = numberExponent & 1;
-            
-      numberExponent -= isOdd;
-      
-      const u64 normalizedBytes = ((u64) (1023 + isOdd) << 52) | (numberBytes & 0x000FFFFFFFFFFFFFLLU);
-      
-      reInterpret.uN = normalizedBytes;
-
-      f64 normalizedNumber = reInterpret.fN;
-      
-      f64 try = 0.5 * (1.0 + normalizedNumber);
+      f64 try = reInterpret.fN;
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            try = 0.5 * (try + (normalizedNumber / try));
+            try = 0.5 * (try + (number / try));
       }
 
-      const i32 finalExponent = (numberExponent >> 1) + 1023;
-
-      reInterpret.fN = try;
-
-      const u64 tryBytes = reInterpret.uN;
-      const u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
-
-      reInterpret.uN = finalBytes;
-
-      return reInterpret.fN;
+      return try;
 }
 
 f32 SSqrtF(f32 number, i32 iterations)
 { 
-      if (number <= 0)
-      {
-            return number;
-      }
-
-      U32F32ToF32U32 reInterpret = {0};
+      U32F32ToF32U32 reInterpret;
 
       reInterpret.fN = number;
+      reInterpret.uN = 0x1FBC0000 + (reInterpret.uN >> 1);
 
-      const u32 numberBytes = reInterpret.uN;
-            
-      const u32 biasExponent = (numberBytes >> 23) & 0x00000000000000FF;
-      i32 numberExponent = (i32) biasExponent - 127;
-
-      const u32 isOdd = numberExponent & 1;
-    
-      numberExponent -= isOdd;
-
-      const u32 normalizedBytes = ((u32) (127 + isOdd) << 23) | (numberBytes & 0x00000000007FFFFF);
-
-      reInterpret.uN = normalizedBytes;
-
-      f32 normalizedNumber = reInterpret.fN;
-
-      f32 try = 0.5 * (1.0 + normalizedNumber);
+      f32 try = reInterpret.fN;
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            try = 0.5 * (try + (normalizedNumber / try));
+            try = 0.5f * (try + (number / try));
       }
 
-      const i32 finalExponent = (numberExponent >> 1) + 127;
-
-      reInterpret.fN = try;
-
-      const u32 tryBytes = reInterpret.uN;
-      const u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
-
-      reInterpret.uN = finalBytes;
-
-      return reInterpret.fN;
+      return try;
 }
 
 f64 SSqrt2(f64 number, i32 iterations)
 { 
-      if (number <= 0)
-      {
-            return number;
-      }
-
-      U64F64ToF64U64 reInterpret = {0};
+      U64F64ToF64U64 reInterpret;
 
       reInterpret.fN = number;
+      reInterpret.uN = 0x1FF0000000000000 + (reInterpret.uN >> 1);
 
-      const u64 numberBytes = reInterpret.uN;
-            
-      const u32 biasExponent = (numberBytes >> 52) & 0x00000000000007FF;
-      i32 numberExponent = (i32) biasExponent - 1023;
-
-      const i32 isOdd = numberExponent & 1;
-            
-      numberExponent -= isOdd;
-      
-      const u64 normalizedBytes = ((u64) (1023 + isOdd) << 52) | (numberBytes & 0x000FFFFFFFFFFFFFLLU);
-
-      reInterpret.uN = normalizedBytes;
-
-      f64 normalizedNumber = reInterpret.fN;
-
-      f64 try = 0.5 * (1.0 + normalizedNumber);
+      f64 try = reInterpret.fN;
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            try = try * ((try * try) + (3 * normalizedNumber)) / ((3 * (try * try)) + normalizedNumber);
+            try = try * ((try * try) + (3.0 * number)) / ((3.0 * (try * try)) + number);
       }
 
-      const i32 finalExponent = (numberExponent >> 1) + 1023;
-
-      reInterpret.fN = try;
-
-      const u64 tryBytes = reInterpret.uN;
-      const u64 finalBytes = ((u64) finalExponent << 52) | (tryBytes & 0x000FFFFFFFFFFFFFLLU);
-
-      reInterpret.uN = finalBytes;
-
-      return reInterpret.fN;
+      return try;
 }
 
 f32 SSqrt2F(f32 number, i32 iterations)
 { 
-      if (number <= 0)
-      {
-            return number;
-      }
-
-      U32F32ToF32U32 reInterpret = {};
+      U32F32ToF32U32 reInterpret;
 
       reInterpret.fN = number;
+      reInterpret.uN = 0x1FBC0000 + (reInterpret.uN >> 1);
 
-      const u32 numberBytes = reInterpret.uN;
-            
-      const u32 biasExponent = (numberBytes >> 23) & 0x00000000000000FF;
-      i32 numberExponent = (i32) biasExponent - 127;
-
-      const u32 isOdd = numberExponent & 1;
-    
-      numberExponent -= isOdd;
-
-      const u32 normalizedBytes = ((u32) (127 + isOdd) << 23) | (numberBytes & 0x00000000007FFFFF);
-
-      reInterpret.uN = normalizedBytes;
-
-      f32 normalizedNumber = reInterpret.fN;
-
-      f32 try = 0.5 * (1.0 + normalizedNumber);
+      f32 try = reInterpret.fN;
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            try = try * ((try * try) + (3 * normalizedNumber)) / ((3 * (try * try)) + normalizedNumber);
+            try = try * ((try * try) + (3.0f * number)) / ((3.0f * (try * try)) + number);
       }
 
-      const i32 finalExponent = (numberExponent >> 1) + 127;
-
-      reInterpret.fN = try;
-
-      const u32 tryBytes = reInterpret.uN;
-      const u32 finalBytes = ((u32) finalExponent << 23) | (tryBytes & 0x00000000007FFFFF);
-
-      reInterpret.uN = finalBytes;
-
-      return reInterpret.fN;
+      return try;
 }
 
 f64 HSqrt(f64 number)
@@ -236,4 +125,102 @@ f32 HFSqrtF(f32 number)
       __m128 value = _mm_rsqrt_ss(reg);
 
       return _mm_cvtss_f32(value) * number;
+}
+
+f64 SExp(f64 number, f64 exp)
+{
+      U64F64ToF64U64 reInterpret;
+      reInterpret.fN = number;
+
+      f64 fLogExp = (f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0;
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | 0x3FF0000000000000LLU;
+
+      fLogExp += -2.475404 + reInterpret.fN * (3.321382 + reInterpret.fN * (-0.999602 + 0.153624 * reInterpret.fN));
+      fLogExp *= exp;
+
+      const f64 fixedExp = HFloor(fLogExp);
+
+      const i32 intExp = (i32) fixedExp;
+      const f64 decExp = fLogExp - fixedExp;
+
+      const f64 decPart = 1.0 + decExp * (0.695713 + decExp * (0.222458 + decExp * 0.081829));
+      const u64 finalLogExp = (u64) (intExp + 1023);
+
+      reInterpret.fN = decPart;
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | (finalLogExp << 52);
+
+      return reInterpret.fN;
+}
+
+f32 SExpF(f32 number, f32 exp)
+{
+      U32F32ToF32U32 reInterpret;
+      reInterpret.fN = number;
+
+      f32 fLogExp = (f32) ((reInterpret.uN >> 23) & 0xFF) - 127.0f;
+      reInterpret.uN = (reInterpret.uN & 0x007FFFFF) | 0x3F800000;
+      
+      fLogExp += -2.475404f + reInterpret.fN * (3.321382f + reInterpret.fN * (-0.999602f + 0.153624f * reInterpret.fN));
+      fLogExp *= exp;
+
+      const f32 fixedExp = HFloorF(fLogExp);
+
+      const i32 intExp = (i32) fixedExp;
+      const f32 decExp = fLogExp - fixedExp;
+
+      const f32 decPart = 1.0f + decExp * (0.695713f + decExp * (0.222458f + decExp * 0.081829f));
+      const u32 finalLogExp = (u32) (intExp + 127);
+
+      reInterpret.fN = decPart;
+      reInterpret.uN = (reInterpret.uN & 0x007FFFFF) | (finalLogExp << 23);
+
+      return reInterpret.fN;
+}
+
+f64 HRound(f64 number)
+{
+      __m128d reg = _mm_set_sd(number);
+      __m128d value = _mm_round_sd(reg, reg, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+
+      return _mm_cvtsd_f64(value);
+}
+
+f32 HRoundF(f32 number)
+{
+      __m128 reg = _mm_set_ss(number);
+      __m128 value = _mm_round_ss(reg, reg, _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+
+      return _mm_cvtss_f32(value);
+}
+
+f64 HFloor(f64 number)
+{
+      __m128d reg = _mm_set_sd(number);
+      __m128d value = _mm_round_sd(reg, reg, _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC);
+
+      return _mm_cvtsd_f64(value);
+}
+
+f32 HFloorF(f32 number)
+{
+      __m128 reg = _mm_set_ss(number);
+      __m128 value = _mm_round_ss(reg, reg, _MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC);
+
+      return _mm_cvtss_f32(value);
+}
+
+f64 HCeil(f64 number)
+{
+      __m128d reg = _mm_set_sd(number);
+      __m128d value = _mm_round_sd(reg, reg, _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC);
+
+      return _mm_cvtsd_f64(value);
+}
+
+f32 HCeilF(f32 number)
+{
+      __m128 reg = _mm_set_ss(number);
+      __m128 value = _mm_round_ss(reg, reg, _MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC);
+
+      return _mm_cvtss_f32(value);
 }

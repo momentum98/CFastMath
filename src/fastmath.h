@@ -18,4 +18,16 @@ f32 HSqrtF(f32 number);
 f32 HFInvSqrtF(f32 number);
 f32 HFSqrtF(f32 number);
 
+f64 SExp(f64 number, f64 exp);
+f32 SExpF(f32 number, f32 exp);
+
+f64 HRound(f64 number);
+f32 HRoundF(f32 number);
+
+f64 HFloor(f64 number);
+f32 HFloorF(f32 number);
+
+f64 HCeil(f64 number);
+f32 HCeilF(f32 number);
+
 #endif
