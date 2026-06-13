@@ -1,7 +1,6 @@
 #include "fastmath.h"
 
 #include <immintrin.h>
-#include <math.h>
 
 typedef union
 {
