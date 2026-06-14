@@ -13,7 +13,7 @@ int main(int argc, char** args)
       QueryPerformanceFrequency(&freq);
       QueryPerformanceCounter(&start);
 
-      volatile double test1 = SFTan(0.375f);
+      volatile double test1 = SSqrt2(2, 3);
       printf("%.9f\n", test1);
       
       QueryPerformanceCounter(&end);

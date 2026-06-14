@@ -188,7 +188,7 @@ f64 SSqrt(f64 number, i32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = 0.5 * (guess + (number / guess));
+            guess = 0.5 * (guess + (number * SInv(guess, 3)));
       }
 
       return guess;
@@ -205,7 +205,7 @@ f32 SSqrtF(f32 number, i32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = 0.5f * (guess + (number / guess));
+            guess = 0.5f * (guess + (number * SInvF(guess, 3)));
       }
 
       return guess;
@@ -222,7 +222,7 @@ f64 SSqrt2(f64 number, i32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = guess * ((guess * guess) + (3.0 * number)) / ((3.0 * (guess * guess)) + number);
+            guess = guess * ((guess * guess) + (3.0 * number)) * SInv((3.0 * (guess * guess)) + number, 3);
       }
 
       return guess;
@@ -239,7 +239,7 @@ f32 SSqrt2F(f32 number, i32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = guess * ((guess * guess) + (3.0f * number)) / ((3.0f * (guess * guess)) + number);
+            guess = guess * ((guess * guess) + (3.0f * number)) * SInvF((3.0f * (guess * guess)) + number, 3);
       }
 
       return guess;
@@ -633,10 +633,42 @@ f32 STanF(f32 turn)
 
 f64 SAtan2(f64 x, f64 y)
 {
+      const f64 absX = SAbs(x);
+      const f64 absY = SAbs(y);
       
+      const u32 cond = absY > absX;
+
+      const f64 a = cond ? absX : absY;
+      const f64 b = cond ? absY : absX;
+
+      const f64 slope = a * SInv(b, 2);
+      
+      f64 slopeSqr = slope * slope;
+      f64 angle = (slopeSqr * -0.19194795 + 0.97239411) * slope;
+      
+      angle = cond ? 1.57079632 - angle : angle;
+      angle = (x < 0.0) ? 3.14159265 - angle : angle;
+      
+      return SCopySign(angle, y); 
 }
 
 f32 SAtan2F(f32 x, f32 y)
 {
+      const f32 absX = SAbsF(x);
+      const f32 absY = SAbsF(y);
       
+      const u32 cond = absY > absX;
+
+      const f32 a = cond ? absX : absY;
+      const f32 b = cond ? absY : absX;
+
+      const f32 slope = a * SInvF(b, 2);
+      
+      f32 slopeSqr = slope * slope;
+      f32 angle = (slopeSqr * -0.19194795f + 0.97239411f) * slope;
+      
+      angle = cond ? 1.57079632f - angle : angle;
+      angle = (x < 0.0f) ? 3.14159265f - angle : angle;
+      
+      return SCopySign(angle, y); 
 }
