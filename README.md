@@ -4,61 +4,61 @@
 # <div align="center">Features / Methods</div>
 
 <div align="center">
-Software Sqrt
-Software Sqrt Float
+Software Sqrt\n
+Software Sqrt Float\n
 
-Software Sqrt Second Order
-Software Sqrt Second Order Float
+Software Sqrt Second Order\n
+Software Sqrt Second Order Float\n
 
-Hardware Sqrt
-Hardware Sqrt Float
+Hardware Sqrt\n
+Hardware Sqrt Float\n
 
-Hardware Fast Inverse Sqrt Float
+Hardware Fast Inverse Sqrt Float\n
 
-Hardware Fast Sqrt Float
+Hardware Fast Sqrt Float\n
 
-Software Exp
-Software Exp Float
+Software Exp\n
+Software Exp Float\n
 
-Hardware Round
-Hardware Round Float
+Hardware Round\n
+Hardware Round Float\n
 
-Hardware Floor
-Hardware Floor Float
+Hardware Floor\n
+Hardware Floor Float\n
 
-Hardware Ceil
-Hardware Ceil Float
+Hardware Ceil\n
+Hardware Ceil Float\n
 
-Software Abs
-Software Abs Float
+Software Abs\n
+Software Abs Float\n
 
-Software CopySign
-Software CopySign Float
+Software CopySign\n
+Software CopySign Float\n
 
-Software Inverse
-Software Inverse Float
+Software Inverse\n
+Software Inverse Float\n
 
-Hardware Inv
-Hardware Inv Float
+Hardware Inv\n
+Hardware Inv Float\n
 
-Software Cos
-Software Cos Float
+Software Cos\n
+Software Cos Float\n
 
-Software Sin
-Software Sin Float
+Software Sin\n
+Software Sin Float\n
 
-Software Fast Cos
-Software Fast Cos Float
+Software Fast Cos\n
+Software Fast Cos Float\n
 
-Software Fast Sin
-Software Fast Sin Float
+Software Fast Sin\n
+Software Fast Sin Float\n
 
-Software Fast Tan
-Software Fast Tan Float
+Software Fast Tan\n
+Software Fast Tan Float\n
 
-Software Tan
-Software Tan Float
+Software Tan\n
+Software Tan Float\n
 
-Software Atan2
-Software Atan2 Float
+Software Atan2\n
+Software Atan2 Float\n
 </div>
