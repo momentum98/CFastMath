@@ -11,11 +11,11 @@ int main(int argc, char** args)
       LARGE_INTEGER freq;
 
       QueryPerformanceFrequency(&freq);
-
       QueryPerformanceCounter(&start);
 
-      printf("%f\n", HCeilF(1.08));
-      \
+      volatile double test1 = SFTan(0.375f);
+      printf("%.9f\n", test1);
+      
       QueryPerformanceCounter(&end);
       
       double delay = (double) (end.QuadPart - start.QuadPart) * 1000.0 / freq.QuadPart;

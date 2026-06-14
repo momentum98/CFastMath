@@ -10,12 +10,15 @@ typedef double             f64;
 
 f64 SSqrt(f64 number, i32 iterations);
 f32 SSqrtF(f32 number, i32 iterations);
+
 f64 SSqrt2(f64 number, i32 iterations);
 f32 SSqrt2F(f32 number, i32 iterations);
 
 f64 HSqrt(f64 number);
 f32 HSqrtF(f32 number);
+
 f32 HFInvSqrtF(f32 number);
+
 f32 HFSqrtF(f32 number);
 
 f64 SExp(f64 number, f64 exp);
@@ -29,5 +32,38 @@ f32 HFloorF(f32 number);
 
 f64 HCeil(f64 number);
 f32 HCeilF(f32 number);
+
+f64 SAbs(f64 number);
+f32 SAbsF(f32 number);
+
+f64 SCopySign(f64 number, f64 signNumber);
+f32 SCopySignF(f32 number, f32 signNumber);
+
+f64 SInv(f64 number, u32 iterations);
+f32 SInvF(f32 number, u32 iterations);
+
+f64 HInv(f64 number, u32 iterations);
+f32 HInvF(f32 number);
+
+f64 SCos(f64 radians);
+f32 SCosF(f32 radians);
+
+f64 SSin(f64 radians);
+f32 SSinF(f32 radians);
+
+f64 SFCos(f64 radians);
+f32 SFCosF(f32 radians);
+
+f64 SFSin(f64 radians);
+f32 SFSinF(f32 radians);
+
+f64 SFTan(f64 radians);
+f32 SFTanF(f32 radians);
+
+f64 STan(f64 radians);
+f32 STanF(f32 radians);
+
+f64 SAtan2(f64 x, f64 y);
+f32 SAtan2F(f32 x, f32 y);
 
 #endif
