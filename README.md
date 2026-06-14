@@ -7,58 +7,57 @@
 Software Sqrt<br>
 Software Sqrt Float<br>
 
-Software Sqrt Second Order\n
-Software Sqrt Second Order Float\n
+Software Sqrt Second Order<br>
+Software Sqrt Second Order Float<br>
 
 Hardware Sqrt<br>
-Hardware Sqrt Float\n
+Hardware Sqrt Float<br>
 
-Hardware Fast Inverse Sqrt Float\n
+Hardware Fast Inverse Sqrt Float<br><br>
+Hardware Fast Sqrt Float<br>
 
-Hardware Fast Sqrt Float\n
+Software Exp<br>
+Software Exp Float<br>
 
-Software Exp\n
-Software Exp Float\n
+Hardware Round<br>
+Hardware Round Float<br>
 
-Hardware Round\n
-Hardware Round Float\n
+Hardware Floor<br>
+Hardware Floor Float<br>
 
-Hardware Floor\n
-Hardware Floor Float\n
+Hardware Ceil<br>
+Hardware Ceil Float<br>
 
-Hardware Ceil\n
-Hardware Ceil Float\n
+Software Abs<br>
+Software Abs Float<br>
 
-Software Abs\n
-Software Abs Float\n
+Software CopySign<br>
+Software CopySign Float<br>
 
-Software CopySign\n
-Software CopySign Float\n
+Software Inverse<br>
+Software Inverse Float<br>
 
-Software Inverse\n
-Software Inverse Float\n
+Hardware Inv<br>
+Hardware Inv Float<br>
 
-Hardware Inv\n
-Hardware Inv Float\n
+Software Cos<br>
+Software Cos Float<br>
 
-Software Cos\n
-Software Cos Float\n
+Software Sin<br>
+Software Sin Float<br>
 
-Software Sin\n
-Software Sin Float\n
+Software Fast Cos<br>
+Software Fast Cos Float<br>
 
-Software Fast Cos\n
-Software Fast Cos Float\n
+Software Fast Sin<br>
+Software Fast Sin Float<br>
 
-Software Fast Sin\n
-Software Fast Sin Float\n
+Software Fast Tan<br>
+Software Fast Tan Float<br>
 
-Software Fast Tan\n
-Software Fast Tan Float\n
+Software Tan<br>
+Software Tan Float<br>
 
-Software Tan\n
-Software Tan Float\n
-
-Software Atan2\n
-Software Atan2 Float\n
+Software Atan2<br>
+Software Atan2 Float<br>
 </div>
