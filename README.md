@@ -4,13 +4,13 @@
 # <div align="center">Features / Methods</div>
 
 <div align="center">
-Software Sqrt\n
-Software Sqrt Float\n
+Software Sqrt<br>
+Software Sqrt Float<br>
 
 Software Sqrt Second Order\n
 Software Sqrt Second Order Float\n
 
-Hardware Sqrt\n
+Hardware Sqrt<br>
 Hardware Sqrt Float\n
 
 Hardware Fast Inverse Sqrt Float\n
