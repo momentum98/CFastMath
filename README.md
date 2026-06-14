@@ -1,7 +1,7 @@
 # <div align="center">CFastMath </div>
 <div align="center">A Fast Math Library Made in C Only.</div>
 
-# <div align="center">Features / Methods</div>
+### <div align="center">Features / Methods</div>
 
 <div align="center">
 Software Sqrt<br>
