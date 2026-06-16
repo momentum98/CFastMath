@@ -22,6 +22,15 @@ Hardware Fast Sqrt Float<br>
 Software Exp<br>
 Software Exp Float<br>
 
+Software Fast Exp<br>
+Software Fast Exp Float<br>
+
+Software Lerp<br>
+Software Lerp Float<br>
+
+Software Fast Lerp<br>
+Software Fast Lerp Float<br>
+
 Hardware Round<br>
 Hardware Round Float<br>
 
