@@ -122,6 +122,26 @@ f32 SCopySignF(f32 number, f32 signNumber)
       return reInterpretNum.fN;
 }
 
+f64 SFLerp(f64 a, f64 b, f64 p)
+{
+      return a + (b - a) * p;
+}
+
+f32 SFLerpF(f32 a, f32 b, f32 p)
+{
+      return a + (b - a) * p;
+}
+
+f64 SLerp(f64 a, f64 b, f64 p)
+{
+      return (1 - p) * a + b * p;
+}
+
+f32 SLerpF(f32 a, f32 b, f32 p)
+{
+      return (1 - p) * a + b * p;
+}
+
 f64 SInv(f64 number, u32 iterations)
 {
       U64F64ToF64U64 reInterpret;
@@ -283,6 +303,95 @@ f64 SExp(f64 number, f64 exp)
       reInterpret.fN = number;
 
       f64 fLogExp = (f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0;
+      
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | 0x3FF0000000000000LLU;
+      
+      const f64 nMantissa = reInterpret.fN - 1.0;
+
+      fLogExp += nMantissa * (1.4426950408889634074 + nMantissa * (
+            -0.7213475153215513511 + nMantissa * (
+             0.4808983455799981395 + nMantissa * (
+            -0.3606740620216656730 + nMantissa * (
+             0.2885437812959828591 + nMantissa * (
+            -0.2401140026262445199 + nMantissa * (
+             0.2061214040182851410 + nMantissa * (
+            -0.1774395687796900400 + nMantissa * (
+             0.1545620942548261300 + nMantissa * (
+            -0.1287968412850722200 + nMantissa * 0.1068478440700465500
+      ))))))))));
+
+      fLogExp *= exp;
+
+      const f64 fixedExp = HFloor(fLogExp);
+      const i32 intExp = (i32) fixedExp;
+      const f64 decExp = fLogExp - fixedExp;
+
+      const f64 decPart = 1.0 + decExp * (
+            0.6931471805599453094 + decExp * (
+            0.2402265069591007183 + decExp * (
+            0.0555041086648215799 + decExp * (
+            0.0096181291076284776 + decExp * (
+            0.0013333558146428443 + decExp * (
+            0.0001540353039338160 + decExp * (
+            0.0000152527338048598 + decExp * (
+            0.0000013215486790144 + decExp * 0.0000001017808600924
+      ))))))));
+
+      const u64 finalLogExp = (u64) (intExp + 1023);
+
+      reInterpret.fN = decPart;
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | (finalLogExp << 52);
+
+      return reInterpret.fN;
+}
+
+f32 SExpF(f32 number, f32 exp)
+{
+      U32F32ToF32U32 reInterpret;
+      reInterpret.fN = number;
+
+      f32 fLogExp = (f32) ((reInterpret.uN >> 23) & 0xFF) - 127.0f;
+      reInterpret.uN = (reInterpret.uN & 0x007FFFFF) | 0x3F800000;
+      
+      const f32 nMantissa = reInterpret.fN - 1.0f;
+
+      fLogExp += nMantissa * (1.4426950f + nMantissa * (
+            -0.7211625f + nMantissa * (
+             0.4731114f + nMantissa * (
+            -0.3150020f + nMantissa * (
+             0.1987642f + nMantissa * (
+            -0.1171452f + nMantissa * 0.0524026f
+      ))))));
+
+      fLogExp *= exp;
+
+      const f32 fixedExp = HFloorF(fLogExp);
+      const i32 intExp = (i32) fixedExp;
+      const f32 decExp = fLogExp - fixedExp;
+
+      const f32 decPart = 1.0f + decExp * (
+            0.6931472f + decExp * (
+            0.2402265f + decExp * (
+            0.0555041f + decExp * (
+            0.0096181f + decExp * (
+            0.0013334f + decExp * (
+            0.0001540f + decExp * 0.0000153f
+      ))))));
+
+      const u32 finalLogExp = (u32) (intExp + 127);
+
+      reInterpret.fN = decPart;
+      reInterpret.uN = (reInterpret.uN & 0x007FFFFF) | (finalLogExp << 23);
+
+      return reInterpret.fN;
+}
+
+f64 SFExp(f64 number, f64 exp)
+{
+      U64F64ToF64U64 reInterpret;
+      reInterpret.fN = number;
+
+      f64 fLogExp = (f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0;
       reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | 0x3FF0000000000000LLU;
 
       fLogExp += -3.0390146 + reInterpret.fN * (4.9883594 + reInterpret.fN * (-3.1583092 + reInterpret.fN * (1.4925010 + reInterpret.fN * (-0.4211116 + 0.0515152 * reInterpret.fN))));
@@ -302,7 +411,7 @@ f64 SExp(f64 number, f64 exp)
       return reInterpret.fN;
 }
 
-f32 SExpF(f32 number, f32 exp)
+f32 SFExpF(f32 number, f32 exp)
 {
       U32F32ToF32U32 reInterpret;
       reInterpret.fN = number;
