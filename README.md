@@ -1,5 +1,8 @@
 # <div align="center">CFastMath </div>
-<div align="center">A Fast Math Library Made in C Only.</div>
+<div align="center">
+  A Fast Math Library Made in C Only.<br>
+  Note: This a FAST Math Library, Focusing in Performance, so Precision may be Affected.
+</div>
 
 ## <div align="center">Features / Methods</div>
 
