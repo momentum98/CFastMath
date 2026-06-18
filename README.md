@@ -7,6 +7,8 @@
 ## <div align="center">Features / Methods</div>
 
 <div align="center">
+TODO: Update Methods List (this list) :)<br>
+  
 Software Sqrt<br>
 Software Sqrt Float<br>
 

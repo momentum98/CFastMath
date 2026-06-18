@@ -281,38 +281,46 @@ f32 SLerpF(f32 a, f32 b, f32 p)
       return (1 - p) * a + b * p;
 }
 
-//
-// TODO: Finish these Interpolation Methods.
-//
-
 f64 SEaseIn(f64 a, f64 b, f64 p)
 {
+      const f64 finalProgress = (b - a) * (p * p);
       
+      return a + finalProgress;
 }
 
 f32 SEaseInF(f32 a, f32 b, f32 p)
 {
+      const f32 finalProgress = (b - a) * (p * p);
       
+      return a + finalProgress;
 }
 
 f64 SEaseOut(f64 a, f64 b, f64 p)
 {
+      const f64 finalProgress = (b - a) * (p * (2.0 - p));
       
+      return a + finalProgress;
 }
 
 f32 SEaseOutF(f32 a, f32 b, f32 p)
 {
+      const f32 finalProgress = (b - a) * (p * (2.0f - p));
       
+      return a + finalProgress;
 }
 
 f64 SEaseInOut(f64 a, f64 b, f64 p)
 {
+      const f64 finalProgress = (b - a) * (p * p * (3.0 - 2.0 * p));
       
+      return a + finalProgress;
 }
 
 f32 SEaseInOutF(f32 a, f32 b, f32 p)
 {
+      const f32 finalProgress = (b - a) * (p * p * (3.0f - 2.0f * p));
       
+      return a + finalProgress;
 }
 
 f64 SInv(f64 number, u32 iterations)
@@ -1048,7 +1056,7 @@ f32 SAtan2F(f32 x, f32 y)
 }
 
 //
-// TODO: Finish the Trigonometric and Logaritimic Methods.
+// TODO: Finish the Trigonometric Methods.
 //
 
 f64 SACos(f64 cos)
@@ -1073,30 +1081,93 @@ f32 SASinF(f32 sin)
 
 f64 SLog2(f64 number)
 {
+      U64F64ToF64U64 reInterpret;
+      reInterpret.fN = number;
+      
+      const f64 fExp = (f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0;
 
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
+
+      const f64 x = (reInterpret.fN - 1.0) * HInv(reInterpret.fN + 1.0, 2);
+      const f64 xSqr = x * x;
+      
+      const f64 mExp = x * (((0.412198511654412 * xSqr + 0.577078016299787) * xSqr + 0.961796693126021) * xSqr + 2.885390081777927);
+
+      return fExp + mExp;
 }
 
-f64 SLog2F(f64 number)
+f32 SLog2F(f32 number)
 {
+      U32F32ToF32U32 reInterpret;
+      reInterpret.fN = number;
+      
+      const f32 fExp = (f32) ((reInterpret.uN >> 23) & 0xFF) - 127.0f;
 
+      reInterpret.uN = (reInterpret.uN & 0x7FFFFF) | 0x3F800000;
+      
+      const f32 mExp = ((-0.148140f * reInterpret.fN + 0.811550f) * reInterpret.fN - 1.970222f) * reInterpret.fN + 1.306803f;
+
+      return fExp + mExp;
 }
 
 f64 SLogN(f64 number)
 {
+     U64F64ToF64U64 reInterpret;
+     reInterpret.fN = number;
+      
+     const f64 fExp = ((f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0) * 0.6931471805599453;
 
+     reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
+
+     const f64 x = (reInterpret.fN - 1.0) * HInv(reInterpret.fN + 1.0, 2);
+     const f64 xSqr = x * x;
+     
+     const f64 mExp = x * (((0.2857142857142857 * xSqr + 0.4) * xSqr + 0.6666666666666666) * xSqr + 2.0);
+
+     return fExp + mExp;
 }
 
-f64 SLogNF(f64 number)
+f32 SLogNF(f32 number)
 {
+     U32F32ToF32U32 reInterpret;
+     reInterpret.fN = number;
+      
+     const f32 fExp = ((f32) ((reInterpret.uN >> 23) & 0xFF) - 127.0f) * 0.69314718f;
 
+     reInterpret.uN = (reInterpret.uN & 0x7FFFFF) | 0x3F800000;
+      
+     const f32 mExp = ((-0.102684f * reInterpret.fN + 0.562525f) * reInterpret.fN - 1.365655f) * reInterpret.fN + 0.905814f;
+
+     return fExp + mExp;
 }
 
 f64 SLog10(f64 number)
 {
+     U64F64ToF64U64 reInterpret;
+     reInterpret.fN = number;
+      
+     const f64 fExp = ((f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0) * 0.3010299956639812;
 
+     reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
+
+     const f64 x = (reInterpret.fN - 1.0) * HInv(reInterpret.fN + 1.0, 2);
+     const f64 xSqr = x * x;
+     
+     const f64 mExp = x * (((0.1240841031317512 * xSqr + 0.1737177927641215) * xSqr + 0.2895296542795863) * xSqr + 0.8685889638065037);
+
+     return fExp + mExp;
 }
 
-f64 SLog10F(f64 number)
+f32 SLog10F(f32 number)
 {
+     U32F32ToF32U32 reInterpret;
+     reInterpret.fN = number;
+      
+     const f32 fExp = ((f32) ((reInterpret.uN >> 23) & 0xFF) - 127.0f) * 0.30103f;
 
+     reInterpret.uN = (reInterpret.uN & 0x7FFFFF) | 0x3F800000;
+      
+     const f32 mExp = ((-0.044594f * reInterpret.fN + 0.244301f) * reInterpret.fN - 0.593096f) * reInterpret.fN + 0.393387f;
+
+     return fExp + mExp;
 }
