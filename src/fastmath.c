@@ -4,6 +4,15 @@
 
 const u32 OCTANT_FLAGS = 0x66;
 
+const f64 PI = 3.141592653589793;
+const f32 PIF = 3.141592f;
+
+const f64 INV_PI = 0.318309886183790;
+const f32 INV_PIF = 0.31830f;
+
+const f64 INV_FULL_ANGLE = 0.002777777777777;
+const f32 INV_FULL_ANGLEF = 0.00277f;
+
 typedef union
 {
       f32 fN;
@@ -27,6 +36,110 @@ typedef union
       f64 fN;
       u32 uN;
 } U32F64ToF64U32;
+
+typedef union
+{
+      f32 fN;
+      i64 uN;
+} I64F32ToF32I64;
+
+typedef union
+{
+      f32 fN;
+      i32 uN;
+} I32F32ToF32I32;
+
+typedef union
+{
+      f64 fN;
+      i64 uN;
+} I64F64ToF64I64;
+
+typedef union
+{
+      f64 fN;
+      i32 uN;
+} I32F64ToF64I32;
+
+f64 WrapTo180(f64 angle)
+{
+      return angle - 360.0 * (HFloor((angle + 180.0) * INV_FULL_ANGLE));
+}
+
+f32 WrapTo180F(f32 angle)
+{
+      return angle - (360.0f * HFloor((angle + 180.0f) * INV_FULL_ANGLEF));
+}
+
+f64 WrapTo360(f64 angle)
+{
+      return angle - (360.0 * HFloor(angle * INV_FULL_ANGLE));
+}
+
+f32 WrapTo360F(f32 angle)
+{
+      return angle - (360.0f * HFloor(angle * INV_FULL_ANGLEF));
+}
+
+f64 RadToDeg(f64 rad)
+{
+      return (rad * INV_PI) * 180.0;
+}
+
+f32 RadToDegF(f32 rad)
+{
+      return (rad * INV_PIF) * 180.0f;
+}
+
+f64 RadToTurn(f64 rad)
+{
+      return (rad * INV_PI * 0.5);
+}
+
+f32 RadToTurnF(f32 rad)
+{
+      return (rad * INV_PIF * 0.5f);
+}
+
+f64 DegToRad(f64 deg)
+{
+      return (deg * INV_FULL_ANGLE) * (2.0 * PI);
+}
+
+f32 DegToRadF(f32 deg)
+{
+      return (deg * INV_FULL_ANGLEF) * (2.0f * PIF);
+}
+
+f64 DegToTurn(f64 deg)
+{
+      return (deg * INV_FULL_ANGLE);
+}
+
+f32 DegToTurnF(f32 deg)
+{
+      return (deg * INV_FULL_ANGLEF);
+}
+
+f64 TurnToRad(f64 turn)
+{
+      return turn * (2.0 * PI);
+}
+
+f32 TurnToRadF(f32 turn)
+{
+      return turn * (2.0f * PIF);
+}
+
+f64 TurnToDeg(f64 turn)
+{
+      return turn * 360.0;
+}
+
+f32 TurnToDegF(f32 turn)
+{
+      return turn * 360.0f;
+}
 
 f64 HRound(f64 number)
 {
@@ -76,6 +189,32 @@ f32 HCeilF(f32 number)
       return _mm_cvtss_f32(value);
 }
 
+u32 IsNegative(f64 number)
+{
+      U64F64ToF64U64 reInterpret;
+      reInterpret.fN = number;
+      
+      return (reInterpret.uN >> 63) & 1;
+}
+
+u32 IsNegativeF(f32 number)
+{
+      U32F32ToF32U32 reInterpret;
+      reInterpret.fN = number;
+      
+      return (reInterpret.uN >> 31) & 1;
+}
+
+u32 SSign(f64 number)
+{
+      return (number > 0.0) - (number < 0.0);
+}
+
+u32 SSignF(f32 number)
+{
+      return (number > 0.0f) - (number < 0.0f);
+}
+
 f64 SAbs(f64 number)
 {
       U64F64ToF64U64 reInterpret;
@@ -104,7 +243,7 @@ f64 SCopySign(f64 number, f64 signNumber)
       reInterpretSign.fN = signNumber;
       reInterpretNum.fN = number;
       
-      reInterpretNum.uN = (reInterpretNum.uN & 0x7FFFFFFFFFFFFFFFLLU) | (reInterpretSign.uN & 0x8000000000000000LLU);
+      reInterpretNum.uN = (reInterpretNum.uN & 0x7FFFFFFFFFFFFFFF) | (reInterpretSign.uN & 0x8000000000000000);
 
       return reInterpretNum.fN;
 }
@@ -142,12 +281,46 @@ f32 SLerpF(f32 a, f32 b, f32 p)
       return (1 - p) * a + b * p;
 }
 
+//
+// TODO: Finish these Interpolation Methods.
+//
+
+f64 SEaseIn(f64 a, f64 b, f64 p)
+{
+      
+}
+
+f32 SEaseInF(f32 a, f32 b, f32 p)
+{
+      
+}
+
+f64 SEaseOut(f64 a, f64 b, f64 p)
+{
+      
+}
+
+f32 SEaseOutF(f32 a, f32 b, f32 p)
+{
+      
+}
+
+f64 SEaseInOut(f64 a, f64 b, f64 p)
+{
+      
+}
+
+f32 SEaseInOutF(f32 a, f32 b, f32 p)
+{
+      
+}
+
 f64 SInv(f64 number, u32 iterations)
 {
       U64F64ToF64U64 reInterpret;
       reInterpret.fN = number;
 
-      reInterpret.uN = 0x7FDE648000000000LLU - reInterpret.uN; 
+      reInterpret.uN = 0x7FDE648000000000 - reInterpret.uN; 
       f64 fValue = reInterpret.fN;
       
       for (u32 i = 0; i < iterations; ++i)
@@ -304,7 +477,7 @@ f64 SExp(f64 number, f64 exp)
 
       f64 fLogExp = (f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0;
       
-      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | 0x3FF0000000000000LLU;
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
       
       const f64 nMantissa = reInterpret.fN - 1.0;
 
@@ -340,7 +513,7 @@ f64 SExp(f64 number, f64 exp)
       const u64 finalLogExp = (u64) (intExp + 1023);
 
       reInterpret.fN = decPart;
-      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | (finalLogExp << 52);
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | (finalLogExp << 52);
 
       return reInterpret.fN;
 }
@@ -386,13 +559,105 @@ f32 SExpF(f32 number, f32 exp)
       return reInterpret.fN;
 }
 
+f64 SMax(f64 a, f64 b)
+{
+      return ((a + b) + SAbs(a - b)) * 0.5;
+}
+
+f32 SMaxF(f32 a, f32 b)
+{
+      return ((a + b) + SAbs(a - b)) * 0.5;
+}
+
+f64 HMax(f64 a, f64 b)
+{
+      const __m128d aReg = _mm_set_sd(a);
+      const __m128d bReg = _mm_set_sd(b);
+
+      const __m128d value = _mm_max_sd(aReg, bReg);
+
+      return _mm_cvtsd_f64(value);
+}
+
+f32 HMaxF(f32 a, f32 b)
+{
+      const __m128 aReg = _mm_set_ss(a);
+      const __m128 bReg = _mm_set_ss(b);
+
+      const __m128 value = _mm_max_ss(aReg, bReg);
+
+      return _mm_cvtss_f32(value);
+}
+
+f64 SMin(f64 a, f64 b)
+{
+      return ((a + b) - SAbs(a - b)) * 0.5;
+}
+
+f32 SMinF(f32 a, f32 b)
+{
+      return ((a + b) - SAbs(a - b)) * 0.5;
+}
+
+f64 HMin(f64 a, f64 b)
+{
+      const __m128d aReg = _mm_set_sd(a);
+      const __m128d bReg = _mm_set_sd(b);
+
+      const __m128d value = _mm_min_sd(aReg, bReg);
+
+      return _mm_cvtsd_f64(value);
+}
+
+f32 HMinF(f32 a, f32 b)
+{
+      const __m128 aReg = _mm_set_ss(a);
+      const __m128 bReg = _mm_set_ss(b);
+
+      const __m128 value = _mm_min_ss(aReg, bReg);
+
+      return _mm_cvtss_f32(value);
+}
+
+f64 SClamp(f64 value, f64 min, f64 max)
+{
+      const f64 maxPatched = SMax(value, min);
+      const f64 minPatched = SMin(minPatched, max);
+
+      return minPatched;
+}
+
+f32 SClampF(f32 value, f32 min, f32 max)
+{
+      const f32 minPatched = SMaxF(value, min);
+      const f32 maxPatched = SMinF(minPatched, max);
+
+      return maxPatched;
+}
+
+f64 HClamp(f64 value, f64 min, f64 max)
+{
+      const f64 minPatched = HMax(value, min);
+      const f64 maxPatched = HMin(minPatched, max);
+
+      return maxPatched;
+}
+
+f32 HClampF(f32 value, f32 min, f32 max)
+{
+      const f32 minPatched = HMaxF(value, min);
+      const f32 maxPatched = HMinF(minPatched, max);
+
+      return maxPatched;
+}
+
 f64 SFExp(f64 number, f64 exp)
 {
       U64F64ToF64U64 reInterpret;
       reInterpret.fN = number;
 
       f64 fLogExp = (f64) ((reInterpret.uN >> 52) & 0x7FF) - 1023.0;
-      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | 0x3FF0000000000000LLU;
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
 
       fLogExp += -3.0390146 + reInterpret.fN * (4.9883594 + reInterpret.fN * (-3.1583092 + reInterpret.fN * (1.4925010 + reInterpret.fN * (-0.4211116 + 0.0515152 * reInterpret.fN))));
       fLogExp *= exp;
@@ -406,7 +671,7 @@ f64 SFExp(f64 number, f64 exp)
       const u64 finalLogExp = (u64) (intExp + 1023);
 
       reInterpret.fN = decPart;
-      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFFLLU) | (finalLogExp << 52);
+      reInterpret.uN = (reInterpret.uN & 0x000FFFFFFFFFFFFF) | (finalLogExp << 52);
 
       return reInterpret.fN;
 }
@@ -780,4 +1045,58 @@ f32 SAtan2F(f32 x, f32 y)
       angle = (x < 0.0f) ? 3.14159265f - angle : angle;
       
       return SCopySign(angle, y); 
+}
+
+//
+// TODO: Finish the Trigonometric and Logaritimic Methods.
+//
+
+f64 SACos(f64 cos)
+{
+
+}
+
+f32 SACosF(f32 cos)
+{
+
+}
+
+f64 SASin(f64 sin)
+{
+
+}
+
+f32 SASinF(f32 sin)
+{
+
+}
+
+f64 SLog2(f64 number)
+{
+
+}
+
+f64 SLog2F(f64 number)
+{
+
+}
+
+f64 SLogN(f64 number)
+{
+
+}
+
+f64 SLogNF(f64 number)
+{
+
+}
+
+f64 SLog10(f64 number)
+{
+
+}
+
+f64 SLog10F(f64 number)
+{
+
 }
