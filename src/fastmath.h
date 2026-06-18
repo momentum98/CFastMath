@@ -104,6 +104,9 @@ f32 HFloorF(f32 number);
 f64 HCeil(f64 number);
 f32 HCeilF(f32 number);
 
+u32 IsNegative(f64 number);
+u32 IsNegativeF(f32 number);
+
 u32 SSign(f64 number);
 u32 SSignF(f32 number);
 
