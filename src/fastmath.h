@@ -165,12 +165,12 @@ f64 SASin(f64 sin);
 f32 SASinF(f32 sin);
 
 f64 SLog2(f64 number);
-f64 SLog2F(f64 number);
+f32 SLog2F(f32 number);
 
 f64 SLogN(f64 number);
-f64 SLogNF(f64 number);
+f32 SLogNF(f32 number);
 
 f64 SLog10(f64 number);
-f64 SLog10F(f64 number);
+f32 SLog10F(f32 number);
 
 #endif

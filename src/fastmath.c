@@ -370,12 +370,19 @@ f64 HInv(f64 number, u32 iterations)
       return fValue;
 }
 
-f32 HInvF(f32 number)
+f32 HInvF(f32 number, u32 iterations)
 {
       const __m128 reg = _mm_set_ss(number);
       const __m128 value = _mm_rcp_ss(reg);
 
-      return _mm_cvtss_f32(value);
+      f64 fValue = (f64) _mm_cvtss_f32(value);
+
+      for (u32 i = 0; i < iterations; ++i)
+      {
+            fValue = fValue * (2.0 - number * fValue);
+      }
+
+      return fValue;
 }
 
 f64 SSqrt(f64 number, i32 iterations)
@@ -958,7 +965,7 @@ f32 SFTanF(f32 turn)
 
       f32 result = cInterval * (0.785398163f + cIntervalSqr * (0.16137528f + 0.05322692f * cIntervalSqr));
 
-      result = isOdd ? HInvF(result) : result;
+      result = isOdd ? HInvF(result, 2) : result;
 
       const f32 fSign = 1.0f - 2.0f * (f32) ((octant >> 1) & 1);
 
@@ -1055,28 +1062,112 @@ f32 SAtan2F(f32 x, f32 y)
       return SCopySign(angle, y); 
 }
 
-//
-// TODO: Finish the Trigonometric Methods.
-//
-
 f64 SACos(f64 cos)
 {
+      const u32 signal = SSign(cos);
+      cos = SAbs(cos);
 
+      const f64 cosSqr = cos * cos;
+      const f64 cosSqr2 = (cosSqr * cosSqr);
+      const f64 cosSqr3 = (cosSqr2 * cosSqr);
+      const f64 cosSqr4 = (cosSqr3 * cosSqr);
+      const f64 cosSqr5 = (cosSqr4 * cosSqr);
+
+      const f64 p1 = (-0.045423851531649318 * cosSqr4) 
+         + (0.74990235515610817 * cosSqr3) 
+         - (3.2468404245995405 * cosSqr2) 
+         + (5.4637449576887556 * cosSqr) 
+         - 3.2556571386590153;
+
+      const f64 p2 = cosSqr5
+         - (1.3451543781223945 * cosSqr4) 
+         + (8.92015291242372 * cosSqr3) 
+         - (26.733221538350166 * cosSqr2) 
+         + (37.051740033061225 * cosSqr) 
+         - 19.533942831954092;
+
+      return (PI * 0.5) - signal * ((cos + (cos * cosSqr * (p1 * (HInv(p2, 2))))));
 }
 
 f32 SACosF(f32 cos)
 {
+      const u32 signal = SSignF(cos);
+      cos = SAbsF(cos);
+      
+      const f32 cosSqr = cos * cos;
+      const f32 cosSqr2 = (cosSqr * cosSqr);
+      const f32 cosSqr3 = (cosSqr2 * cosSqr);
+      const f32 cosSqr4 = (cosSqr3 * cosSqr);
+      const f32 cosSqr5 = (cosSqr4 * cosSqr);
 
+      const f32 p1 = (-0.045423f * cosSqr4) 
+         + (0.74990f * cosSqr3) 
+         - (3.24684f * cosSqr2) 
+         + (5.46374f * cosSqr) 
+         - 3.25565f;
+
+      const f32 p2 = cosSqr5
+         - (1.34515f * cosSqr4) 
+         + (8.92015f * cosSqr3) 
+         - (26.73322f * cosSqr2) 
+         + (37.05174f * cosSqr)
+         - 19.53394f;
+
+      return (PI * 0.5f) - signal * ((cos + (cos * cosSqr * (p1 * (HInvF(p2, 2))))));
 }
 
 f64 SASin(f64 sin)
 {
+      const u32 signal = SSign(sin);
+      sin = SAbs(sin);
+      
+      const f64 sinSqr = sin * sin;
+      const f64 sinSqr2 = (sinSqr * sinSqr);
+      const f64 sinSqr3 = (sinSqr2 * sinSqr);
+      const f64 sinSqr4 = (sinSqr3 * sinSqr);
+      const f64 sinSqr5 = (sinSqr4 * sinSqr);
 
+      const f64 p1 = (-0.045423851531649318 * sinSqr4) 
+         + (0.74990235515610817 * sinSqr3) 
+         - (3.2468404245995405 * sinSqr2) 
+         + (5.4637449576887556 * sinSqr) 
+         - 3.2556571386590153;
+
+      const f64 p2 = sinSqr5
+         - (1.3451543781223945 * sinSqr4) 
+         + (8.92015291242372 * sinSqr3) 
+         - (26.733221538350166 * sinSqr2) 
+         + (37.051740033061225 * sinSqr) 
+         - 19.533942831954092;
+
+      return signal * (sin + (sin * sinSqr * (p1 * (HInv(p2, 2)))));
 }
 
 f32 SASinF(f32 sin)
 {
+      const u32 signal = SSignF(sin);
+      sin = SAbsF(sin);
+      
+      const f32 sinSqr = sin * sin;
+      const f32 sinSqr2 = (sinSqr * sinSqr);
+      const f32 sinSqr3 = (sinSqr2 * sinSqr);
+      const f32 sinSqr4 = (sinSqr3 * sinSqr);
+      const f32 sinSqr5 = (sinSqr4 * sinSqr);
 
+      const f32 p1 = (-0.045423f * sinSqr4) 
+         + (0.74990f * sinSqr3) 
+         - (3.24684f * sinSqr2) 
+         + (5.46374f * sinSqr) 
+         - 3.25565f;
+
+      const f32 p2 = sinSqr5
+         - (1.34515f * sinSqr4) 
+         + (8.92015f * sinSqr3) 
+         - (26.73322f * sinSqr2) 
+         + (37.05174f * sinSqr) 
+         - 19.53394f;
+
+      return signal * (sin + (sin * sinSqr * (p1 * (HInvF(p2, 2)))));
 }
 
 f64 SLog2(f64 number)
