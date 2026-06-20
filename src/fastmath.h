@@ -58,43 +58,6 @@ f32 TurnToRadF(f32 turn);
 f64 TurnToDeg(f64 turn);
 f32 TurnToDegF(f32 turn);
 
-f64 SSqrt(f64 number, i32 iterations);
-f32 SSqrtF(f32 number, i32 iterations);
-
-f64 SSqrt2(f64 number, i32 iterations);
-f32 SSqrt2F(f32 number, i32 iterations);
-
-f64 HSqrt(f64 number);
-f32 HSqrtF(f32 number);
-
-f32 HFInvSqrtF(f32 number);
-
-f32 HFSqrtF(f32 number);
-
-f64 SExp(f64 number, f64 exp);
-f32 SExpF(f32 number, f32 exp);
-
-f64 SFExp(f64 number, f64 exp);
-f32 SFExpF(f32 number, f32 exp);
-
-f64 SMax(f64 a, f64 b);
-f32 SMaxF(f32 a, f32 b);
-
-f64 HMax(f64 a, f64 b);
-f32 HMaxF(f32 a, f32 b);
-
-f64 SMin(f64 a, f64 b);
-f32 SMinF(f32 a, f32 b);
-
-f64 HMin(f64 a, f64 b);
-f32 HMinF(f32 a, f32 b);
-
-f64 SClamp(f64 value, f64 min, f64 max);
-f32 SClampF(f32 value, f32 min, f32 max);
-
-f64 HClamp(f64 value, f64 min, f64 max);
-f32 HClampF(f32 value, f32 min, f32 max);
-
 f64 HRound(f64 number);
 f32 HRoundF(f32 number);
 
@@ -135,7 +98,43 @@ f64 SInv(f64 number, u32 iterations);
 f32 SInvF(f32 number, u32 iterations);
 
 f64 HInv(f64 number, u32 iterations);
-f32 HInvF(f32 number);
+f32 HInvF(f32 number, u32 iterations);
+
+f64 SSqrt(f64 number, i32 iterations);
+f32 SSqrtF(f32 number, i32 iterations);
+
+f64 SSqrt2(f64 number, i32 iterations);
+f32 SSqrt2F(f32 number, i32 iterations);
+
+f64 HSqrt(f64 number);
+f32 HSqrtF(f32 number);
+
+f32 HFInvSqrtF(f32 number);
+f32 HFSqrtF(f32 number);
+
+f64 SExp(f64 number, f64 exp);
+f32 SExpF(f32 number, f32 exp);
+
+f64 SMax(f64 a, f64 b);
+f32 SMaxF(f32 a, f32 b);
+
+f64 HMax(f64 a, f64 b);
+f32 HMaxF(f32 a, f32 b);
+
+f64 SMin(f64 a, f64 b);
+f32 SMinF(f32 a, f32 b);
+
+f64 HMin(f64 a, f64 b);
+f32 HMinF(f32 a, f32 b);
+
+f64 SClamp(f64 value, f64 min, f64 max);
+f32 SClampF(f32 value, f32 min, f32 max);
+
+f64 HClamp(f64 value, f64 min, f64 max);
+f32 HClampF(f32 value, f32 min, f32 max);
+
+f64 SFExp(f64 number, f64 exp);
+f32 SFExpF(f32 number, f32 exp);
 
 f64 SCos(f64 turn);
 f32 SCosF(f32 turn);
