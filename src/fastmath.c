@@ -68,7 +68,7 @@ f64 WrapTo180(f64 angle)
 
 f32 WrapTo180F(f32 angle)
 {
-      return angle - (360.0f * HFloor((angle + 180.0f) * INV_FULL_ANGLEF));
+      return angle - (360.0f * HFloorF((angle + 180.0f) * INV_FULL_ANGLEF));
 }
 
 f64 WrapTo360(f64 angle)
@@ -78,7 +78,7 @@ f64 WrapTo360(f64 angle)
 
 f32 WrapTo360F(f32 angle)
 {
-      return angle - (360.0f * HFloor(angle * INV_FULL_ANGLEF));
+      return angle - (360.0f * HFloorF(angle * INV_FULL_ANGLEF));
 }
 
 f64 RadToDeg(f64 rad)
@@ -375,17 +375,17 @@ f32 HInvF(f32 number, u32 iterations)
       const __m128 reg = _mm_set_ss(number);
       const __m128 value = _mm_rcp_ss(reg);
 
-      f64 fValue = (f64) _mm_cvtss_f32(value);
+      f32 fValue = _mm_cvtss_f32(value);
 
       for (u32 i = 0; i < iterations; ++i)
       {
-            fValue = fValue * (2.0 - number * fValue);
+            fValue = fValue * (2.0f - number * fValue);
       }
 
       return fValue;
 }
 
-f64 SSqrt(f64 number, i32 iterations)
+f64 SSqrt(f64 number, u32 iterations)
 { 
       U64F64ToF64U64 reInterpret;
 
@@ -402,7 +402,7 @@ f64 SSqrt(f64 number, i32 iterations)
       return guess;
 }
 
-f32 SSqrtF(f32 number, i32 iterations)
+f32 SSqrtF(f32 number, u32 iterations)
 { 
       U32F32ToF32U32 reInterpret;
 
@@ -419,7 +419,7 @@ f32 SSqrtF(f32 number, i32 iterations)
       return guess;
 }
 
-f64 SSqrt2(f64 number, i32 iterations)
+f64 SSqrt2(f64 number, u32 iterations)
 { 
       U64F64ToF64U64 reInterpret;
 
@@ -436,7 +436,7 @@ f64 SSqrt2(f64 number, i32 iterations)
       return guess;
 }
 
-f32 SSqrt2F(f32 number, i32 iterations)
+f32 SSqrt2F(f32 number, u32 iterations)
 { 
       U32F32ToF32U32 reInterpret;
 
@@ -581,7 +581,7 @@ f64 SMax(f64 a, f64 b)
 
 f32 SMaxF(f32 a, f32 b)
 {
-      return ((a + b) + SAbs(a - b)) * 0.5;
+      return ((a + b) + SAbsF(a - b)) * 0.5f;
 }
 
 f64 HMax(f64 a, f64 b)
@@ -611,7 +611,7 @@ f64 SMin(f64 a, f64 b)
 
 f32 SMinF(f32 a, f32 b)
 {
-      return ((a + b) - SAbs(a - b)) * 0.5;
+      return ((a + b) - SAbsF(a - b)) * 0.5f;
 }
 
 f64 HMin(f64 a, f64 b)
@@ -636,8 +636,8 @@ f32 HMinF(f32 a, f32 b)
 
 f64 SClamp(f64 value, f64 min, f64 max)
 {
-      const f64 maxPatched = SMax(value, min);
-      const f64 minPatched = SMin(minPatched, max);
+      const f64 minPatched = SMax(value, min);
+      const f64 maxPatched = SMin(minPatched, max);
 
       return minPatched;
 }
@@ -718,9 +718,9 @@ f32 SFExpF(f32 number, f32 exp)
 
 f64 SCos(f64 turn)
 {
-      const f64 interval = (turn + 0.25) - HFloorF(turn + 0.25);
+      const f64 interval = (turn + 0.25) - HFloor(turn + 0.25);
       const f64 qInterval = interval * 8.0f;
-      const u32 octant = (u32) HFloorF(qInterval);
+      const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
 
@@ -772,9 +772,9 @@ f32 SCosF(f32 turn)
 
 f64 SSin(f64 turn)
 {
-      const f64 interval = turn - HFloorF(turn);
-      const f64 qInterval = interval * 8.0f;
-      const u32 octant = (u32) HFloorF(qInterval);
+      const f64 interval = turn - HFloor(turn);
+      const f64 qInterval = interval * 8.0;
+      const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
 
@@ -826,9 +826,9 @@ f32 SSinF(f32 turn)
 
 f64 SFCos(f64 turn)
 {
-      const f64 interval = (turn + 0.25) - HFloorF(turn + 0.25);
-      const f64 qInterval = interval * 8.0f;
-      const u32 octant = (u32) HFloorF(qInterval);
+      const f64 interval = (turn + 0.25) - HFloor(turn + 0.25);
+      const f64 qInterval = interval * 8.0;
+      const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
 
@@ -876,9 +876,9 @@ f32 SFCosF(f32 turn)
 
 f64 SFSin(f64 turn)
 {
-      const f64 interval = turn - HFloorF(turn);
-      const f64 qInterval = interval * 8.0f;
-      const u32 octant = (u32) HFloorF(qInterval);
+      const f64 interval = turn - HFloor(turn);
+      const f64 qInterval = interval * 8.0;
+      const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
 
@@ -926,9 +926,9 @@ f32 SFSinF(f32 turn)
 
 f64 SFTan(f64 turn)
 {
-      const f64 interval = turn - HFloorF(turn);
+      const f64 interval = turn - HFloor(turn);
       const f64 qInterval = interval * 8.0;
-      const u32 octant = (u32) HFloorF(qInterval);
+      const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
 
@@ -974,9 +974,9 @@ f32 SFTanF(f32 turn)
 
 f64 STan(f64 turn)
 {
-      const f64 interval = turn - HFloorF(turn);
+      const f64 interval = turn - HFloor(turn);
       const f64 qInterval = interval * 8.0;
-      const u32 octant = (u32) HFloorF(qInterval);
+      const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
 
@@ -1059,7 +1059,7 @@ f32 SAtan2F(f32 x, f32 y)
       angle = cond ? 1.57079632f - angle : angle;
       angle = (x < 0.0f) ? 3.14159265f - angle : angle;
       
-      return SCopySign(angle, y); 
+      return SCopySignF(angle, y); 
 }
 
 f64 SACos(f64 cos)
@@ -1113,7 +1113,7 @@ f32 SACosF(f32 cos)
          + (37.05174f * cosSqr)
          - 19.53394f;
 
-      return (PI * 0.5f) - signal * ((cos + (cos * cosSqr * (p1 * (HInvF(p2, 2))))));
+      return (PIF * 0.5f) - signal * ((cos + (cos * cosSqr * (p1 * (HInvF(p2, 2))))));
 }
 
 f64 SASin(f64 sin)

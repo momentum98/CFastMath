@@ -100,11 +100,11 @@ f32 SInvF(f32 number, u32 iterations);
 f64 HInv(f64 number, u32 iterations);
 f32 HInvF(f32 number, u32 iterations);
 
-f64 SSqrt(f64 number, i32 iterations);
-f32 SSqrtF(f32 number, i32 iterations);
+f64 SSqrt(f64 number, u32 iterations);
+f32 SSqrtF(f32 number, u32 iterations);
 
-f64 SSqrt2(f64 number, i32 iterations);
-f32 SSqrt2F(f32 number, i32 iterations);
+f64 SSqrt2(f64 number, u32 iterations);
+f32 SSqrt2F(f32 number, u32 iterations);
 
 f64 HSqrt(f64 number);
 f32 HSqrtF(f32 number);
