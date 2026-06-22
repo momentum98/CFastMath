@@ -11,7 +11,7 @@ const f64 INV_PI = 0.318309886183790;
 const f32 INV_PIF = 0.31830f;
 
 const f64 INV_FULL_ANGLE = 0.002777777777777;
-const f32 INV_FULL_ANGLEF = 0.00277f;
+const f32 INV_FULL_ANGLEF = 0.0027777778f;
 
 typedef union
 {
@@ -639,7 +639,7 @@ f64 SClamp(f64 value, f64 min, f64 max)
       const f64 minPatched = SMax(value, min);
       const f64 maxPatched = SMin(minPatched, max);
 
-      return minPatched;
+      return maxPatched;
 }
 
 f32 SClampF(f32 value, f32 min, f32 max)
@@ -719,7 +719,7 @@ f32 SFExpF(f32 number, f32 exp)
 f64 SCos(f64 turn)
 {
       const f64 interval = (turn + 0.25) - HFloor(turn + 0.25);
-      const f64 qInterval = interval * 8.0f;
+      const f64 qInterval = interval * 8.0;
       const u32 octant = (u32) HFloor(qInterval);
 
       f64 cInterval = qInterval - octant;
