@@ -4,20 +4,18 @@
 
 const u32 OCTANT_FLAGS = 0x66;
 
-const f64 PI = 3.141592653589793;
-const f32 PIF = 3.141592f;
+const f64 PI = 3.14159265358979323846264338327950288;
+const f32 PIF = 3.14159265358979323846f;
 
-const f64 INV_PI = 0.318309886183790;
-const f32 INV_PIF = 0.31830f;
+const f64 INV_PI = 0.31830988618379067154;
+const f32 INV_PIF = 0.31830988618f;
 
-const f64 INV_FULL_ANGLE = 0.002777777777777;
-const f32 INV_FULL_ANGLEF = 0.0027777778f;
+const f64 INV_FULL_ANGLE = 1.0 / 360.0;
+const f32 INV_FULL_ANGLEF = 1.0f / 360.0f;
 
-typedef union
-{
-      f32 fN;
-      u64 uN;
-} U64F32ToF32U64;
+//
+// TODO: Change All Small Methods Type to Inline.
+//
 
 typedef union
 {
@@ -33,18 +31,6 @@ typedef union
 
 typedef union
 {
-      f64 fN;
-      u32 uN;
-} U32F64ToF64U32;
-
-typedef union
-{
-      f32 fN;
-      i64 uN;
-} I64F32ToF32I64;
-
-typedef union
-{
       f32 fN;
       i32 uN;
 } I32F32ToF32I32;
@@ -54,12 +40,6 @@ typedef union
       f64 fN;
       i64 uN;
 } I64F64ToF64I64;
-
-typedef union
-{
-      f64 fN;
-      i32 uN;
-} I32F64ToF64I32;
 
 f64 WrapTo180(f64 angle)
 {
@@ -205,12 +185,12 @@ u32 IsNegativeF(f32 number)
       return (reInterpret.uN >> 31) & 1;
 }
 
-u32 SSign(f64 number)
+i32 SSign(f64 number)
 {
       return (number > 0.0) - (number < 0.0);
 }
 
-u32 SSignF(f32 number)
+i32 SSignF(f32 number)
 {
       return (number > 0.0f) - (number < 0.0f);
 }
@@ -396,7 +376,7 @@ f64 SSqrt(f64 number, u32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = 0.5 * (guess + (number * SInv(guess, 3)));
+            guess = 0.5 * (guess + (number / guess));
       }
 
       return guess;
@@ -413,7 +393,7 @@ f32 SSqrtF(f32 number, u32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = 0.5f * (guess + (number * SInvF(guess, 3)));
+            guess = 0.5f * (guess + (number / guess));
       }
 
       return guess;
@@ -430,7 +410,7 @@ f64 SSqrt2(f64 number, u32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = guess * ((guess * guess) + (3.0 * number)) * SInv((3.0 * (guess * guess)) + number, 3);
+            guess = guess * ((guess * guess) + (3.0 * number)) / (3.0 * (guess * guess));
       }
 
       return guess;
@@ -447,7 +427,7 @@ f32 SSqrt2F(f32 number, u32 iterations)
       
       for (u32 i = 0; i < iterations; ++i)
       {
-            guess = guess * ((guess * guess) + (3.0f * number)) * SInvF((3.0f * (guess * guess)) + number, 3);
+            guess = guess * ((guess * guess) + (3.0f * number)) / (3.0 * (guess * guess));
       }
 
       return guess;
@@ -738,8 +718,11 @@ f64 SCos(f64 turn)
       
       const f64 cInterval4 = cIntervalSqr * cIntervalSqr;
 
-      const f64 res = (useCos) ? (1.0 - cIntervalSqr * 0.308425137 + cInterval4 * (0.015854344 - 0.000325991 * cIntervalSqr)) : (cInterval * (0.785398163 - cIntervalSqr * 0.080745512 + cInterval4 * (0.002490095 - 0.000036584 * cIntervalSqr)));
-      
+      const f64 cosPart = 1.0 - cIntervalSqr * 0.308425137 + cInterval4 * (0.015854344 - 0.000325991 * cIntervalSqr);
+      const f64 sinPart = cInterval * (0.785398163 - cIntervalSqr * 0.080745512 + cInterval4 * (0.002490095 - 0.000036584 * cIntervalSqr));
+
+      const f64 res = useCos * cosPart + (f64) (1 - useCos) * sinPart;
+
       return res * fSign;
 }
 
@@ -761,11 +744,13 @@ f32 SCosF(f32 turn)
       const f32 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1; 
-      const f32 fUseCos = (f32) useCos;
       
       const f32 cInterval4 = cIntervalSqr * cIntervalSqr;
 
-      const f32 res = (useCos) ? (1.0f - cIntervalSqr * 0.308425137f + cInterval4 * (0.015854344f - 0.000325991f * cIntervalSqr)) : (cInterval * (0.785398163f - cIntervalSqr * 0.080745512f + cInterval4 * (0.002490095f - 0.000036584f * cIntervalSqr)));
+      const f32 cosPart = 1.0f - cIntervalSqr * 0.308425137f + cInterval4 * (0.015854344f - 0.000325991f * cIntervalSqr);
+      const f32 sinPart = cInterval * (0.785398163f - cIntervalSqr * 0.080745512f + cInterval4 * (0.002490095f - 0.000036584f * cIntervalSqr));
+
+      const f32 res = useCos * cosPart + (f32) (1 - useCos) * sinPart;
       
       return res * fSign;
 }
@@ -788,12 +773,14 @@ f64 SSin(f64 turn)
       const f64 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1;
-      const f64 fUseCos = (f64) useCos;
       
       const f64 cInterval4 = cIntervalSqr * cIntervalSqr;
 
-      const f64 res = (useCos) ? (1.0 - cIntervalSqr * 0.308425137 + cInterval4 * (0.015854344 - 0.000325991 * cIntervalSqr)) : (cInterval * (0.785398163 - cIntervalSqr * 0.080745512 + cInterval4 * (0.002490095 - 0.000036584 * cIntervalSqr)));
-      
+      const f64 cosPart = 1.0 - cIntervalSqr * 0.308425137 + cInterval4 * (0.015854344 - 0.000325991 * cIntervalSqr);
+      const f64 sinPart = cInterval * (0.785398163 - cIntervalSqr * 0.080745512 + cInterval4 * (0.002490095 - 0.000036584 * cIntervalSqr));
+
+      const f64 res = useCos * cosPart + (f64) (1 - useCos) * sinPart;
+
       return res * fSign;
 }
 
@@ -815,12 +802,14 @@ f32 SSinF(f32 turn)
       const f32 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1; 
-      const f32 fUseCos = (f32) useCos;
-
+      
       const f32 cInterval4 = cIntervalSqr * cIntervalSqr;
 
-      const f32 res = (useCos) ? (1.0f - cIntervalSqr * 0.308425137f + cInterval4 * (0.015854344f - 0.000325991f * cIntervalSqr)) : (cInterval * (0.785398163f - cIntervalSqr * 0.080745512f + cInterval4 * (0.002490095f - 0.000036584f * cIntervalSqr)));
-      
+      const f32 sinPart = cInterval * (0.785398163f - cIntervalSqr * 0.080745512f + cInterval4 * (0.002490095f - 0.000036584f * cIntervalSqr));
+      const f32 cosPart = 1.0f - cIntervalSqr * 0.308425137f + cInterval4 * (0.015854344f - 0.000325991f * cIntervalSqr);
+
+      const f32 res = useCos * cosPart + (f32) (1 - useCos) * sinPart;
+
       return res * fSign;
 }
 
@@ -842,9 +831,11 @@ f64 SFCos(f64 turn)
       f64 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1;
-      const f64 fUseCos = (f64) useCos;
+      
+      const f64 cosPart = 1.0 - 0.30842 * cIntervalSqr;
+      const f64 sinPart = cInterval * (0.78539 - 0.08074 * cIntervalSqr);
 
-      const f64 res = (useCos) ? (1.0 - 0.30842 * cIntervalSqr) : (cInterval * (0.78539 - 0.08074 * cIntervalSqr));
+      const f64 res = useCos * cosPart + (f64) (1 - useCos) * sinPart;
       
       return res * fSign;
 }
@@ -867,9 +858,11 @@ f32 SFCosF(f32 turn)
       f32 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1; 
-      const f32 fUseCos = (f32) useCos;
+      
+      const f32 cosPart = 1.0f - 0.30842f * cIntervalSqr;
+      const f32 sinPart = cInterval * (0.78539f - 0.08074f * cIntervalSqr);
 
-      const f32 res = (useCos) ? (1.0f - 0.30842f * cIntervalSqr) : (cInterval * (0.78539f - 0.08074f * cIntervalSqr));
+      const f32 res = useCos * cosPart + (f32) (1 - useCos) * sinPart;
       
       return res * fSign;
 }
@@ -892,9 +885,11 @@ f64 SFSin(f64 turn)
       f64 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1;
-      const f64 fUseCos = (f64) useCos;
+      
+      const f64 cosPart = 1.0 - 0.30842 * cIntervalSqr;
+      const f64 sinPart = cInterval * (0.78539 - 0.08074 * cIntervalSqr);
 
-      const f64 res = (useCos) ? (1.0 - 0.30842 * cIntervalSqr) : (cInterval * (0.78539 - 0.08074 * cIntervalSqr));
+      const f64 res = useCos * cosPart + (f64) (1 - useCos) * sinPart;
       
       return res * fSign;
 }
@@ -917,9 +912,11 @@ f32 SFSinF(f32 turn)
       f32 cIntervalSqr = cInterval * cInterval;
 
       const u32 useCos = (OCTANT_FLAGS >> octant) & 1; 
-      const f32 fUseCos = (f32) useCos;
       
-      const f32 res = (useCos) ? (1.0f - 0.30842f * cIntervalSqr) : (cInterval * (0.78539f - 0.08074f * cIntervalSqr));
+      const f32 cosPart = 1.0f - 0.30842f * cIntervalSqr;
+      const f32 sinPart = cInterval * (0.78539f - 0.08074f * cIntervalSqr);
+      
+      const f32 res = useCos * cosPart + (f32) (1 - useCos) * sinPart;
 
       return res * fSign;
 }
